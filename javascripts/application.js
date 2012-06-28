@@ -1,12 +1,17 @@
 jQuery(document).ready(function($) {
 
+  // check if link is gonna be an image
   var checkImage = /^https?:\/\/(?:[a-z\-]+\.)+[a-z]{2,6}(?:\/[^\/#?]+)+\.(?:jpe?g|gif|png)$/;
+
+  // a reddit to load
   var loadJSON = "http://www.reddit.com/r/funny/"
 
   // initialize app
   $.getJSON(
+    // using the jsonp querystring to avoid XSS errors
     loadJSON+".json?jsonp=?",function foo(result) {
       
+      // prepares to load the next set of items, see similar getJSON function below
       afterNext = result.data.after
 
       $.each(result.data.children.slice(0, 25),
@@ -26,7 +31,10 @@ jQuery(document).ready(function($) {
   $(document).on('click', '#next', function(event) {
     event.preventDefault();
     
+    // scroll to top of viewport
     $('html, body').animate({scrollTop:0}, 'slow');
+    
+    // reset the links
     $('#posts ul').html('');
 
     $.getJSON(
@@ -51,7 +59,7 @@ jQuery(document).ready(function($) {
 
   // capture link clicks
   $(document).on('click', '#posts ul a', function(event) {
-    event.preventDefault(); // stop from navigating away
+    event.preventDefault();
 
     $('#posts ul a').removeClass('active');
     $(this).addClass('active seen');
@@ -62,27 +70,25 @@ jQuery(document).ready(function($) {
       $("#window").html('');
       $('#window').append('<div id="loading-content"><img src="./images/loading.gif" /></div>')
 
+      // build <img> tag, wait for browser to download the image and hide the loading gif once complete
       var _url = targetURL;
-      // set up the node / element
       _im =$("<img>");
-
-      // hide and bind to the load event
       _im.hide();
       _im.bind("load",function(){ 
         $('#loading-content').hide();
         $(this).fadeIn();
       });
 
-      // append to target node / element
+      // stick the fucker in
       $('#window').append(_im);
 
-      // set the src attribute now, after insertion to the DOM
+      // now that the img is built, set the img src
       _im.attr('src',_url);
     } else {
+      // otherwise just put it in an iframe
       $('#window').html('<iframe src="'+targetURL+'" width="100%" height="100%">');
     }
 
   });
-
 
 });
