@@ -72,7 +72,7 @@ jQuery(document).ready(function($) {
 
       // build <img> tag, wait for browser to download the image and hide the loading gif once complete
       var _url = targetURL;
-      _im =$("<img>");
+      _im =$("<img id='content'>");
       _im.hide();
       _im.bind("load",function(){ 
         $('#loading-content').hide();
@@ -89,6 +89,26 @@ jQuery(document).ready(function($) {
       $('#window').html('<iframe src="'+targetURL+'" width="100%" height="100%">');
     }
 
+  });
+
+  // function to keep #window in viewport when scrolling.
+  $(function() {
+    var $viewport   = $("#window"), 
+        $window    = $(window),
+        offset     = $viewport.offset(),
+        topPadding = 0;
+
+    $window.scroll(function() {
+      if ($window.scrollTop() > offset.top) {
+          $viewport.stop().animate({
+              marginTop: $window.scrollTop() - offset.top + topPadding
+          });
+      } else {
+          $viewport.stop().animate({
+              marginTop: 0
+          });
+      }
+    }); 
   });
 
 });
