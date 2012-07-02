@@ -4,15 +4,28 @@ jQuery(document).ready(function($) {
   var checkImage = /^https?:\/\/(?:[a-z\-]+\.)+[a-z]{2,6}(?:\/[^\/#?]+)+\.(?:jpe?g|gif|png)$/;
 
   // a reddit to load
+  // can combine reddits like so: http://www.reddit.com/r/funny+wtf+cats/
   var loadJSON = "http://www.reddit.com/r/funny/"
+
+  // this value is required for querying 'before' so our Previous 25 button works.
+  // increments in 25's
+  // e.g .json?count=25&after=t3_vwgw7&jsonp=?
+  var count = 0;
 
   // initialize app
   $.getJSON(
     // using the jsonp querystring to avoid XSS errors
     loadJSON+".json?jsonp=?",function foo(result) {
-      
+
       // prepares to load the next set of items, see similar getJSON function below
-      afterNext = result.data.after
+      pageNext = result.data.after
+      pagePrev = result.data.before
+
+      // set next button query string
+      // not needed to work, just to help in debugging or whatevs
+      $('#next').attr({
+        href: '#?'+pageNext
+      })
 
       $.each(result.data.children.slice(0, 25),
         function (i, post) {
@@ -37,10 +50,23 @@ jQuery(document).ready(function($) {
     // reset the links
     $('#posts ul').html('');
 
+    // increment the before counter
+    count = count+25;
+
     $.getJSON(
-      loadJSON+".json?after="+afterNext+"&jsonp=?",function foo(result) {
+      loadJSON+".json?count="+count+"&after="+pageNext+"&jsonp=?",function foo(result) {
+
+      pagePrev = result.data.before
+      pageNext = result.data.after
       
-      afterNext = result.data.after
+      $('#next').attr({
+        href: '#?'+pageNext
+      })
+      $('#prev').show();
+      $('#prev').attr({
+        href: '#?'+pagePrev
+      })
+
 
       $.each(result.data.children.slice(0, 25),
         function (i, post) {
@@ -54,10 +80,49 @@ jQuery(document).ready(function($) {
       )
     }
   )
-
   });
 
-  // capture link clicks //
+  // load previous 25 items
+  $(document).on('click', '#prev', function(event) {
+    event.preventDefault();
+    
+    // scroll to top of viewport
+    $('html, body').animate({scrollTop:0}, 'slow');
+    
+    // reset the links
+    $('#posts ul').html('');
+
+    // decrement the before counter, because we're going back (wooooaaaah)!
+    count = count-25;
+
+    $.getJSON(
+      loadJSON+".json?count="+count+"&before="+pagePrev+"&jsonp=?",function foo(result) {
+
+      pagePrev = result.data.before
+      pageNext = result.data.after
+      
+      $('#next').attr({
+        href: '#?'+pageNext
+      })
+      $('#prev').attr({
+        href: '#?'+pagePrev
+      })
+
+      $.each(result.data.children.slice(0, 25),
+        function (i, post) {
+        // check for image links and apply image class to parent <li> if true
+        if (checkImage.test(post.data.url)) {
+          $("#posts ul").append( '<li class="image"><a href="'+post.data.url+'">' + post.data.title + "</a></li>");
+        } else {
+          $("#posts ul").append( '<li><a href="'+post.data.url+'">' + post.data.title + "</a></li>");
+        };
+        }
+      )
+    }
+  )
+  });
+
+  // capture link clicks
   $(document).on('click', '#posts ul a', function(event) {
     event.preventDefault();
 
