@@ -93,7 +93,7 @@ jQuery(document).ready(function($) {
 
 
   $(document).on('click', '#window img', function(event) {
-    $('#window img').addClass('hueg');
+    $('#window img').toggleClass('hueg');
   });
 
   // function to keep #window in viewport when scrolling.

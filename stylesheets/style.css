@@ -60,7 +60,7 @@ div#window {
     display: block;
     margin: 30px auto;
     max-width: 80%;
-    height: 90%; }
+    max-height: 90%; }
   div#window img.hueg {
     height: 100% !important; }
 
