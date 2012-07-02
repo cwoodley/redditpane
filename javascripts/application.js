@@ -57,7 +57,7 @@ jQuery(document).ready(function($) {
 
   });
 
-  // capture link clicks
+  // capture link clicks //
   $(document).on('click', '#posts ul a', function(event) {
     event.preventDefault();
 
