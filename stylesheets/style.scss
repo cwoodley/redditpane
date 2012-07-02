@@ -42,6 +42,7 @@ div#posts {
   }
 
   ul {
+    background:$silver;
     display: block;
     min-height:850px;
   }
@@ -96,6 +97,10 @@ div#window {
     margin: 30px auto;
     max-width:80%;
     height:90%;
+  }
+
+  img.hueg {
+    height: 100% !important;
   }
 }
 

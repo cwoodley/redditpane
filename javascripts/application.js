@@ -91,6 +91,11 @@ jQuery(document).ready(function($) {
 
   });
 
+
+  $(document).on('click', '#window img', function(event) {
+    $('#window img').addClass('hueg');
+  });
+
   // function to keep #window in viewport when scrolling.
   $(function() {
     var $viewport   = $("#window"), 

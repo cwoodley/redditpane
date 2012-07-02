@@ -24,6 +24,7 @@ div#posts {
   div#posts #next {
     margin: 10px 0; }
   div#posts ul {
+    background: #f5f5f5;
     display: block;
     min-height: 850px; }
   div#posts li {
@@ -60,6 +61,8 @@ div#window {
     margin: 30px auto;
     max-width: 80%;
     height: 90%; }
+  div#window img.hueg {
+    height: 100% !important; }
 
 .btn {
   display: inline-block;
